@@ -92,16 +92,15 @@ def score(guess, answer):
     # and using a faster function in that case.
     result = ["."]*5
     lettercount=defaultdict(int)
-    for letter in answer:
-        lettercount[letter] += 1
     # Process the exact matches.
     for ii in range(5):
         if guess[ii] == answer[ii]:
             result[ii] = guess[ii]
-            lettercount[answer[ii]] -= 1
+        else:
+            lettercount[answer[ii]] += 1
     # Process the leftover "right letters in wrong position."
     for ii in range(5):
-        if lettercount[guess[ii]] > 0:
+        if result[ii] == '.' and lettercount[guess[ii]] > 0:
             result[ii] = guess[ii].lower()
             lettercount[guess[ii]] -= 1
     return ''.join(result)
@@ -157,7 +156,10 @@ def read_word_list(filename):
     print("Loaded %d words." % len(words))
     return words
 
-words = read_word_list('/usr/share/dict/american-english')
+try: 
+    words = read_word_list('/usr/share/dict/american-english')
+except:
+    words = read_word_list('/usr/share/dict/words')
 
 # A wordl game server, which picks a random secret answer, and responds to our guesses.
 class WordlGame:
